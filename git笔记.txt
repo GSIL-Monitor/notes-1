@@ -1,0 +1,24 @@
+
+1、eclipse中记住git密码：
+	直接在.git/config文件中添加如下配置：
+		[credential]    
+    		helper = store --file .git-credentials
+
+
+git log --pretty=oneline			日志单行显示
+export GIT_DEITOR_vim 				设置编辑器
+git branch --set-upstream-to=orgin/develop	将当前分支与远程develop分支关联
+git checkout -- <文件名>			丢弃工作区修改，只对工作区的文件有效
+git reset HEAD <文件名> 			把stage区文件放回到工作区
+git reset --hard 提交id				git版本回退到 提交id后的版本
+git config -l 					查看所有配置 
+git config -l --global 				全局配置
+git log -3 --pretty=oneline HEAD		显示最近3行记录，且单行显示
+git log --pretty=oneline adbdf3			显示adbdf3前缀的唯一提交记录日志
+git log --graph					带时间轴线的日志
+git remote set-url origin http://		修改远程仓库地址
+git reset HEAD^					回退到上一版本
+git reset HEAD^^				回退到上上一版本
+git reset HEAD~n				回退到n次前的版本
+git reflog					可以查看到被覆盖的提交记录
+

@@ -1,0 +1,18 @@
+变量名称关联修改	Alt+shift+R
+覆盖方法		trol+o
+实现接口方法		alt+shift+p
+关闭文件		shift+click(tab 上文件名)
+定位当前文件位置	alt+F1   project view
+查看当前文件类继承关系	ctrl+H
+查看父类对应的方法	ctrl+B
+查看子类对应的方法	ctrl+alt+B
+向下添加一行		shift+enter
+复制当前行到下一行	ctrl+D
+删除当前行		ctrl+Y
+关联选中的行整体上下移	ctrl+shift+↓/↑
+当前行任意上下移动	alt+shift+↓/↑
+局部查找/替换窗口	ctrl+R
+全局查找/替换窗口	ctrl+shift+R
+代码提示		ctrl+shift+space
+补全引用名称及类型	ctrl+alt+V
+选择粘贴		ctrl+shift+V
