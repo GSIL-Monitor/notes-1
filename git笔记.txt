@@ -21,7 +21,7 @@ git reset HEAD^					回退到上一版本
 git reset HEAD^^				回退到上上一版本
 git reset HEAD~n				回退到n次前的版本
 git reflog					可以查看到被覆盖的提交记录
-
-git remote add origin https://github.com/r/notes.git
-						关联远程仓库
+git remote add origin https://../xx.git		关联远程仓库
 git push -u origin master			首次将分支推到远程仓库
+git branch -vv					查看当前详细分支信息（可看到当前分支与对应的远程追踪分支）
+git remote -vv					查看当前远程仓库信息
