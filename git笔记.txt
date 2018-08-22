@@ -17,6 +17,8 @@ git log -3 --pretty=oneline HEAD		显示最近3行记录，且单行显示
 git log --pretty=oneline adbdf3			显示adbdf3前缀的唯一提交记录日志
 git log --graph					带时间轴线的日志
 git remote set-url origin http://		修改远程仓库地址
+git branch --set-upstream-to=origin/dev 	建立本地到上游（远端）仓的链接 --这样代码才能提交上去
+git branch --unset-upstream master		取消对master的跟踪
 git reset HEAD^					回退到上一版本
 git reset HEAD^^				回退到上上一版本
 git reset HEAD~n				回退到n次前的版本
@@ -25,3 +27,5 @@ git remote add origin https://../xx.git		关联远程仓库
 git push -u origin master			首次将分支推到远程仓库
 git branch -vv					查看当前详细分支信息（可看到当前分支与对应的远程追踪分支）
 git remote -vv					查看当前远程仓库信息
+git push origin :functional			删除远程分支functional
+git push --set-upstream origin functional	本地分支推到远程并创建远程分支functional
