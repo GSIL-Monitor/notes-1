@@ -16,3 +16,4 @@
 代码提示		ctrl+shift+space
 补全引用名称及类型	ctrl+alt+V
 选择粘贴		ctrl+shift+V
+try-catch		ctrl+shift+f7
