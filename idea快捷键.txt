@@ -17,3 +17,4 @@
 补全引用名称及类型	ctrl+alt+V
 选择粘贴		ctrl+shift+V
 try-catch		ctrl+shift+f7
+比对文件：选中两个文件  ctrl+D
