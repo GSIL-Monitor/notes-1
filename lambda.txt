@@ -1,0 +1,110 @@
+       new Thread(() -> System.out.println("thread")).start();
+       // Function function3= o -> o.getClass();
+        Function function3= String::valueOf;
+
+        System.out.println(function3.apply("134"));
+
+        Compare<Boolean> compare=(a,b) -> a.equals(b);
+        System.out.println(compare.compareTo("aa","aa"));
+
+        Compare2<Boolean> compare2=String::equals;
+
+        Supplier<String> supplier=() -> new String();
+        Supplier<String> supplier1=String::new;
+        System.out.println("-------------------------1----------------------");
+
+        //Collection 的stream() 和 parallelStream();
+        List<String> list=new ArrayList<>();
+        Stream<String> stream=list.stream();
+        Stream<String> stringStream=list.parallelStream();
+        //通过arrays
+        Stream<String> stream1= Arrays.stream(new String[10]);
+        //通过Stream
+        Stream<Integer> stream2=Stream.of(1,2,3);
+        //无限流，迭代 没有limit()则会无限循环
+        Stream<Integer> iterate=Stream.iterate(0,(x) -> x+2);
+        iterate.limit(2).forEach(System.out::println);
+
+        //生成
+        Stream<Double> generate = Stream.generate(() -> Math.random());
+        generate.limit(2).forEach(System.out::println);
+
+        System.out.println("-------------------------Stream中间操作----------------------");
+        list.add("cccccc");
+        list.add("bbb");
+        list.add("aaa");
+        list.add("ee");
+        list.add("dddddddddddddd");
+        list.add("aaa");
+        list.stream()
+                .map(s -> s+1)//映射，对每个元素操作
+                .flatMap(s ->Stream.of(s))
+                .filter(s -> s.length()<10)//过滤
+                .limit(5)//限制
+                .skip(1)//跳过
+                .distinct()//去重
+                .sorted();//排序，可自定义排序,如 .sorted(Integer::compareTo)
+        list.stream().forEach(System.out::println);
+
+        System.out.println("-------------------------Stream终止操作----------------------");
+
+        System.out.println(list.stream().allMatch((x) ->x.length()>5));//所有匹配？
+        System.out.println(list.stream().anyMatch((x) ->x.length()>5));//任意一个匹配？
+        System.out.println(list.stream().noneMatch((x) -> x.length()<2));//都不匹配？
+        System.out.println(list.stream().findFirst().get());//返回第一个元素
+        System.out.println(list.stream().findAny().get());//返回流中任意一个元素
+        System.out.println(list.stream().count());//返回流中元素个数
+        list.stream().forEach(System.out::println);//迭代遍历
+        System.out.println(list.stream().max(String::compareTo).get());//字符串最大
+        System.out.println(list.stream().min(String::compareTo).get());//字符串最小
+        System.out.println(list.stream().max(Comparator.comparingInt(String::length)).get());//字符串长度最大的元素
+        System.out.println(list.stream().min(Comparator.comparingInt(String::length)).get());//字符串长度最小的元素
+
+        System.out.println("------Stream终止操作：reduce （归约）：将流中元素反复结合起来得到一个值-------------");
+        List<Integer> intList=new ArrayList<>();
+        intList.add(3);
+        intList.add(1);
+        intList.add(2);
+        intList.add(1);
+
+
+        Integer reduce=intList.stream().map(s -> s+1)
+                .reduce(0,(x,y) -> x+y);
+        System.out.println(reduce);
+
+        Integer reduce1=intList.stream().map(s -> s+1)
+                .reduce((x,y) -> x+y).get();
+
+        String reduce2=list.stream()
+                .reduce((x,y) -> x+y).get();
+        System.out.println(reduce2);
+        System.out.println("------Stream终止操作：collect（收集）：将流转换为其他形式。需要Collectors类的一些方法。------------");
+
+        Set<Integer> collect = intList.stream().collect(Collectors.toSet());
+        System.out.println(collect.size());
+        List<Integer> collect1 = intList.stream().collect(Collectors.toList());
+        HashSet<Integer> collect2 = intList.stream().collect(Collectors.toCollection(HashSet::new));
+        Map<String, List<Integer>> collect3 = intList.stream().collect(Collectors.groupingBy((x) -> "group"));
+        System.out.println(collect3);
+
+        Map<String, Map<Integer, List<Integer>>> collect4 = intList.stream().collect(Collectors.groupingBy((x) -> "group", Collectors.groupingBy((x) -> x)));
+        System.out.println(collect4);
+
+        Map<Boolean, List<Integer>> collect5 = intList.stream().collect(Collectors.partitioningBy((x) -> x > 2));
+        System.out.println(collect5);
+
+        IntSummaryStatistics collect6 = intList.stream().collect(Collectors.summarizingInt((x) -> x));
+        System.out.println(collect6.getMax());
+        System.out.println(collect6.getCount());
+        System.out.println(collect6.getAverage());
+        System.out.println(collect6.getSum());
+        System.out.println(collect6.getMin());
+
+        String collect7 = intList.stream().map(s -> s.toString()).collect(Collectors.joining(","));
+        System.out.println(collect7);
+
+        Integer maxInt = intList.stream().collect(Collectors.maxBy(Integer::compare)).get();
+        System.out.println(maxInt);
+
+        List<Integer> collect8 = intList.stream().filter((x) -> x > 1).collect(Collectors.toList());
+        System.out.println(collect8);

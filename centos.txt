@@ -52,9 +52,9 @@ firewall-cmd --zone=public --add-port=80/tcp --permanent    £¨--permanentÓÀ¾ÃÉúĞ
 ÖØĞÂÔØÈë
 firewall-cmd --reload
 ²é¿´
-firewall-cmd --zone= public --query-port=80/tcp
+firewall-cmd --zone=public --query-port=80/tcp
 É¾³ı
-firewall-cmd --zone= public --remove-port=80/tcp --permanent
+firewall-cmd --zone=public --remove-port=80/tcp --permanent
 
 
 
