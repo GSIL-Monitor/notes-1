@@ -1,4 +1,6 @@
-jmds项目测试服务
+emc项目测试服务
 进入crt 连接 10.0.0.20  pass:whtemp234
 ssh 10.10.0.12 pass:zzh830330
 ssh 10.10.30.26 pass:whtemp234
+
+tail -f ../opt/jmdsout.log

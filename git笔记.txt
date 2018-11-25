@@ -29,3 +29,7 @@ git branch -vv					查看当前详细分支信息（可看到当前分支与对应的远程追踪分支）
 git remote -vv					查看当前远程仓库信息
 git push origin :functional			删除远程分支functional
 git push --set-upstream origin functional	本地分支推到远程并创建远程分支functional
+git stash					把未提交的修改内容放到暂存区
+git stash pop					把暂存区的内容恢复到工作区
+
+新服务器  4qq1234qwer

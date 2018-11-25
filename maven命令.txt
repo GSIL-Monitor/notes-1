@@ -1,0 +1,32 @@
+
+
+
+
+mvn install -Dmaven.test.skip=true  安装：参数表示跳过测试
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-co
+mpiler-plugin:3.1  		查看插件信息,或者直接去官网看插件信息
+mvn help:describe -Dplugin=org.apache.maven.plugins:maven-co
+mpiler-plugin:3.1 -Ddetail  查看更多详细信息
+使用插件前缀简化以上两条命令
+mvn help:describe -Dplugin=compiler 
+mvn help:describe -Dplugin=compiler -Ddetail
+mvn help:describe -Dplugin=compiler -Dgoal=compile  查看compile目标的信息
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
