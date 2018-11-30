@@ -1,4 +1,7 @@
 ip addr		查看ip
+history		查看用户历史执行的命令，有编号及命令
+!23		执行历史命令中编号为23的命令
+hi+tabtab	命令前缀+两次按tab键，会出现以hi开头的命令列表
 
 service network start 或restart失败 报Job for network.service failed because the control process exited with error code...
 	输入如下指令 ，重启网卡：
@@ -77,4 +80,3 @@ crontab -l			查看定时任务
 crontab -r			删除所有定时任务
 
 
-	
