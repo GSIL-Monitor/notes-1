@@ -31,5 +31,6 @@ git push origin :functional			删除远程分支functional
 git push --set-upstream origin functional	本地分支推到远程并创建远程分支functional
 git stash					把未提交的修改内容放到暂存区
 git stash pop					把暂存区的内容恢复到工作区
+git remote prune origin				删除远程不存在但在本地还存在的分支
 
 新服务器  4qq1234qwer

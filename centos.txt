@@ -57,5 +57,24 @@ firewall-cmd --zone=public --query-port=80/tcp
 firewall-cmd --zone=public --remove-port=80/tcp --permanent
 
 
+linux shell脚本命令
+cut -f1 -d' '				将每行数据用' '分割取第1部分，-fn-m 取第n到m部分。
+	如：ps -ef|grep mysql | cut -f1 -d' ' >name.txt
+cut -c2- 				取第2到结尾的字符
+tar zcvf target.tar.gz /opt/../source.txt打包成tar.gz，可以打包单个文件，也可以打包文件夹
+
+-------------------------时间-------------------------------------------------------
+date +%Y			2018
+date +%y			18
+date +%d			21
+date +%D			11/21/18
+date +%Y-%m-%d' '%H:%M:%S	2018-11-21 15:45:03
+
+---------------------定时任务-------------------------------------------------------
+
+crontab -e			编辑定时任务
+crontab -l			查看定时任务
+crontab -r			删除所有定时任务
+
 
 	
