@@ -1,4 +1,4 @@
-package com.example.netty.server;
+package com.emc.netty.server;
 
 import com.alibaba.fastjson.JSON;
 import io.netty.buffer.ByteBuf;

@@ -1,6 +1,6 @@
-package com.example.netty.server;
+package com.emc.netty.server;
 
-import com.example.netty.client.CommType;
+import com.emc.netty.client.CommType;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

@@ -1,6 +1,6 @@
-package com.example.netty;
+package com.emc.netty;
 
-import com.example.netty.client.SubscribeClientBuilder;
+import com.emc.netty.client.SubscribeClientBuilder;
 
 public class Test {
     public static void main(String[] args) {

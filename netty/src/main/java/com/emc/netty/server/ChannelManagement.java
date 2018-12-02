@@ -1,8 +1,8 @@
-package com.example.netty.server;
+package com.emc.netty.server;
 
 
 import com.alibaba.fastjson.JSON;
-import com.example.netty.client.CommType;
+import com.emc.netty.client.CommType;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
 import lombok.experimental.Accessors;

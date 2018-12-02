@@ -1,4 +1,4 @@
-package com.example.netty.client;
+package com.emc.netty.client;
 
 public enum CommType {
     //注册订阅
@@ -8,5 +8,5 @@ public enum CommType {
     //设备发送消息
     C,
     //错误格式
-    D;
+    D
 }

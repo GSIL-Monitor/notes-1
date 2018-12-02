@@ -1,11 +1,9 @@
-package com.example.netty.server;
+package com.emc.netty.server;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.example.netty.client.CommType;
-import com.example.netty.dto.RegisterTopicReqDTO;
-import com.example.netty.dto.RegisterTopicResDTO;
+import com.emc.netty.dto.RegisterTopicReqDTO;
+import com.emc.netty.dto.RegisterTopicResDTO;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -17,7 +15,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.*;
 
-import static com.example.netty.client.CommType.*;
+import static com.emc.netty.client.CommType.*;
 
 /**
  * @author yandixuan
@@ -43,11 +41,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         CommDTO commDTO=parseFromMsg(msg,ctx);
         switch (commDTO.getType()){
             case A:
-                System.out.println("注册信息："+msg);
+                log.info("注册信息：{}",msg);
                 registerTopic((RegisterTopicReqDTO)commDTO.getData(),ctx);
                 break;
             case B:
-                System.out.println("heartbeat");
+                break;
+            case D:
                 break;
             default:
                 break;
@@ -56,7 +55,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        log.info("发生异常---{}", ctx);
+        log.warn("发生异常---{}", ctx);
         channelManagement.removeCtx(ctx);
     }
 
@@ -81,10 +80,12 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             topicResDTO=checkUserTopic(registerData);
         }catch (Exception e){
             ctx.writeAndFlush(MessageWrapper.objectWrapper(new CommDTO(A,"server error!")));
+            log.warn("网络连接失败，无法验证注册信息！");
             ctx.close();
         }
         if(topicResDTO==null){
             ctx.writeAndFlush(MessageWrapper.objectWrapper(new CommDTO(A,"username error!")));
+            log.warn("用户名错误，注册失败！");
             ctx.close();
         }else{
             Set<String> topicsOk=topicResDTO.getTopicOk();
@@ -120,20 +121,6 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     }
 
-    private Object getTestMsg(int n){
-        Map<String,Object> msgMap=new HashMap<>();
-        msgMap.put("productId","app001");
-        msgMap.put("total",n);
-        List<Map> msgList=new ArrayList<>();
-        for (int i=0;i<n;i++){
-            Map<String,String> map1=new HashMap<>();
-            map1.put("deviceId","deivce00"+(i/5));
-            map1.put("payload","this is message from device"+i);
-            msgList.add(map1);
-        }
-        msgMap.put("list",msgList);
-        return msgMap;
-    }
     private CommDTO parseFromMsg(Object msg,ChannelHandlerContext ctx){
         CommDTO commDTO=new CommDTO();
         try{
@@ -150,7 +137,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         }catch (Exception e){
             //消息格式错误
             ctx.writeAndFlush(MessageWrapper.objectWrapper(new CommDTO(A,"format error!")));
-
+            log.warn("服务端发送了错误的消息格式！");
             ctx.close();
             commDTO.setType(D);
         }

@@ -1,4 +1,4 @@
-package com.example.netty.server;
+package com.emc.netty.server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.Unpooled;

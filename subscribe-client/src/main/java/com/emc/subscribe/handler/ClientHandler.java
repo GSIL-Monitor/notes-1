@@ -24,19 +24,21 @@ import java.util.Set;
 public class ClientHandler extends ChannelInboundHandlerAdapter {
     private static final Logger log=LoggerFactory.getLogger(ClientHandler.class);
     private MessageHandler messageHandler;
+    private int heartbeatTime;
     private String username;
     private Map<String,String> topics;
 
-    public ClientHandler(String username,Map<String,String> topics,MessageHandler messageHandler) {
+    public ClientHandler(String username, Map<String,String> topics, MessageHandler messageHandler, int heartbeatTime) {
         super();
         this.username=username;
         this.topics=topics;
         this.messageHandler=messageHandler;
+        this.heartbeatTime=heartbeatTime;
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx){
-        log.info("已成功连接到服务端，准备发送注册信息。。。");
+        messageHandler.onConnected();
         //连接成功，订阅消息
         CommDTO commDTO=new CommDTO();
         commDTO.setType(CommType.A);
@@ -50,16 +52,17 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg){
-        log.info("读取信息。。。");
         parseFromMsg(msg, ctx);
     }
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        log.info("读取完成。。。");
         super.channelReadComplete(ctx);
     }
-
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx){
+        messageHandler.onDisconnected();
+    }
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         log.info("发生异常。。。");
@@ -67,26 +70,25 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         ctx.close();
     }
 
+
+
     private void parseFromMsg(Object msg,ChannelHandlerContext ctx){
 
         CommDTO commDTO = JSON.parseObject(msg.toString(), CommDTO.class);
         if(commDTO.getType().equals(A)){
             try{
                 RegisterTopicResDTO registerTopicResDTO = JSON.parseObject(commDTO.getData().toString(), RegisterTopicResDTO.class);
-                log.info("订阅成功：{}",registerTopicResDTO.getTopicOk());
-                log.warn("订阅失败：{}",registerTopicResDTO.getTopicError());
+                messageHandler.onSubscribeSuccess(registerTopicResDTO);
                 Set<String> topicOks = registerTopicResDTO.getTopicOk();
                 if(topicOks!=null && topicOks.size()>0){
                     new Thread(()-> sendHeartBeat(ctx)).start();
                 }
             }catch (Exception e){
-                log.error("注册失败：{}",commDTO.getData());
+                messageHandler.onSubscribeFailed(commDTO.getData());
                 ctx.close();
             }
         }else if(commDTO.getType().equals(C)){
-            if(messageHandler!=null){
-                messageHandler.message(commDTO.getData());
-            }
+            messageHandler.onMessage(commDTO.getData());
         }
     }
 
@@ -95,7 +97,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
         while(true){
             ctx.writeAndFlush(MessageWrapper.objectWrapper(heartbeatCommDTO));
             try{
-                Thread.sleep(60000);
+                Thread.sleep(heartbeatTime);
             }catch (Exception e){ }
         }
     }

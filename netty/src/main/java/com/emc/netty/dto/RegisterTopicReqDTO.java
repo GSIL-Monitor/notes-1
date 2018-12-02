@@ -1,4 +1,4 @@
-package com.example.netty.dto;
+package com.emc.netty.dto;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

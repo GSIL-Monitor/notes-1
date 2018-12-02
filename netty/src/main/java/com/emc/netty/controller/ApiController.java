@@ -1,13 +1,11 @@
-package com.example.netty.controller;
+package com.emc.netty.controller;
 
-import com.example.netty.server.ChannelManagement;
+import com.emc.netty.server.ChannelManagement;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.security.auth.login.AccountException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

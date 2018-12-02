@@ -1,4 +1,4 @@
-package com.example.netty.server;
+package com.emc.netty.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.HashedWheelTimer;
