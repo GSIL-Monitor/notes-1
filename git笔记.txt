@@ -33,4 +33,8 @@ git stash					把未提交的修改内容放到暂存区
 git stash pop					把暂存区的内容恢复到工作区
 git remote prune origin				删除远程不存在但在本地还存在的分支
 
+git tag -a <版本号> -m "版本信息"		创建本地tag
+git push origin --tags				tag推送到远程仓库
+git tag -d <版本号>				删除本地版本号
+
 新服务器  4qq1234qwer

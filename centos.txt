@@ -2,6 +2,7 @@ ip addr		查看ip
 history		查看用户历史执行的命令，有编号及命令
 !23		执行历史命令中编号为23的命令
 hi+tabtab	命令前缀+两次按tab键，会出现以hi开头的命令列表
+rpm -qc xxx 	搜索文件及文件夹xxx
 
 service network start 或restart失败 报Job for network.service failed because the control process exited with error code...
 	输入如下指令 ，重启网卡：
@@ -79,4 +80,37 @@ crontab -e			编辑定时任务
 crontab -l			查看定时任务
 crontab -r			删除所有定时任务
 
+指令单发：deviceId  或者  deviceId + appId  
+指令群发: appId 或者不给 
+
+
+使用杀死/启动服务脚本说明。。。。
+杀死进程
+杀死单个服务
+./scripts/kill_process.sh manager	杀死emc-manager.jar服务
+./scripts/kill_process.sh gateway	杀死emc-gateway.jar服务
+./scripts/kill_process.sh msgcore	杀死emc-msgcore.jar服务
+./scripts/kill_process.sh tcp		杀死emc-tcp.jar服务
+./scripts/kill_process.sh mqtt		杀死emc-mqtt.jar服务
+./scripts/kill_process.sh ct		杀死emc-ct.jar服务
+./scripts/kill_process.sh coap		杀死emc-coap.jar服务
+./scripts/kill_process.sh udp		杀死emc-udp.jar服务
+
+杀死多个服务多个 
+./scripts/kill_process.sh tcp udp	杀死emc-tcp.jar 及emc-udp.jar 服务 其它类推
+./scripts/kill_process.sh -a 		杀死上述8个服务
+
+启动服务
+./scripts/start_emc.sh manager	启动emc-manager.jar服务
+./scripts/start_emc.sh gateway	启动emc-gateway.jar服务
+./scripts/start_emc.sh msgcore	启动emc-msgcore.jar服务
+./scripts/start_emc.sh tcp	启动emc-tcp.jar服务
+./scripts/start_emc.sh mqtt	启动emc-mqtt.jar服务
+./scripts/start_emc.sh ct	启动emc-ct.jar服务
+./scripts/start_emc.sh coap	启动emc-coap.jar服务
+./scripts/start_emc.sh udp	启动emc-udp.jar服务
+
+启动多个个服务多个 
+./scripts/start_emc.sh tcp udp	启动emc-tcp.jar 及emc-udp.jar 服务 其它类推
+./scripts/start_emc.sh -a 	启动上述8个服务
 

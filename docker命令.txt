@@ -1,0 +1,223 @@
+
+docker 安装
+wget https://get.docker.com/rpm/1.7.1/centos-7/RPMS/x86_64/docker-engine-1.7.1-1.el7.centos.x86_64.rpm
+rpm -ivh docker-engine-1.7.1-1.el7.centos.x86_64.rpm  使用rpm安装包安装
+
+没有源：
+$ sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+sudo yum install docker-ce
+
+或 
+sudo subscription-manager repos --enable=rhel-7-server-extras-rpms 添加源
+yum install docker		在线安装
+
+或centos7
+tee /etc/yum.repos.d/docker.repo <<-'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+yum install docker-engine
+
+systemctl start docker		启动
+systemctl enable docker		加入开机启动
+
+更换源：
+https://blog.csdn.net/hongbin_xu/article/details/79316614
+
+docker version				查看docker版本
+docker info				查看信息
+docker images				查看本地已有镜像
+docker run -it 镜像名:版本标签 应用名	利用某版本号的镜像创建一个容器，在其中运行 应用名
+docker tag imageNameA:v1 myImageName:v2	为镜像imageNameA:v1添加标签为myImageName:v2，用户就可以直接用myImageName:v2来表示imageNameA:v1这个镜像了
+dokcer inspect 镜像:tag			可以查看该镜像的详细信息
+dokcer history 镜像:tag			可以查看该镜像历史
+docker ps -a 				查看所有的容器信息，不带-a查正在运行的容器
+docker ps -qa				查看所有的容器的ID
+
+docker search 镜像			搜索镜像
+docker search --automated 镜像		搜索自动创建的镜像
+		-s 3	镜像		搜索评价为 3+（3星）以上的镜像
+docker rmi 镜像:tag [镜像2:tag]		删除镜像（如果一个镜像有多个标签，则只删除标签，镜像文件还存在，如果只剩最后一个标签，则删除镜像文件）
+docker rmi -f  镜像:tag			强制删除镜像（用上一种方法如果容器正在运行则无法删除),不推荐强制删除，
+docker rm 容器ID  +  docker rmi 镜像ID	先删除容器，再删除镜像
+
+docker commit -m "提交信息 " -a "作者" 容器ID 镜像名:TAG
+					基于已有镜像的容器创建镜像，其中‘容器ID’为某个镜像容器运行的ID 如root@998aa9d93da2:/# 中的998aa9d93da2
+docker import [OPTIONS] file|URL| - [REPOSITORY[:TAG]] 	基于本地模板导入创建镜像，如：
+cat ubuntu-14.04-x86_64-minimal.tar.gz | docker import - ubuntu:14.04  根据本地文件ubuntu-14.04-x86_64-minimal.tar.gz创建镜像ubuntu:14.04
+
+docker save -o ubuntu_14.04.tar ubuntu:14.04	存出镜像ubuntu:14.04为文件ubuntu_14.04.tar,导出镜像文件
+docker load --input ubuntu_14.04.tar		载入镜像文件ubuntu_14.04.tar，导入镜像
+
+docker export -o test_run.tar 容器ID	导出容器方法1
+docker export 容器ID >test_run.tar 	导出容器方法2
+docker import test_run.tar - test/ubuntu:v1.0	导入容器（导入之后成了镜像，而不是容器）使用容器快照保存镜像比直接导出镜像文件所产生的文件小一些，
+						因为容器快照会丢失镜像的历史信息和元数据信息。
+
+docker pull 镜像名:TAG			下载镜像，默认从docker hub官方仓库下载
+docker pull index.texcloud.com/docker_library/node:latest	从指定网站下载镜像
+docker push 				上传镜像，默认上传到docker hub官方仓库，需要登录 。。。 
+
+docker create -it ubuntu:14.04		创建容器（返回容器ID）
+docker start 容器ID（可只写部分）	启动容器
+docker stop  容器ID（可只写部分）	停止容器
+dokcer restart 容器ID（可只写部分）	重启容器
+docker logs 容器ID（可只写部分）	查看日志
+
+docker run -it ubuntu:14.04 /bin/echo 'hello.world' 	创建并启动容器echo后自动停止 -i保持标准输入打开，-t允许docker分配一个伪终端 -d允许后台运行
+							--rm 容器终止后立即删除（不能与-d同时使用）
+docker run -it ubuntu:14.04 /bin/bash	创建并启动容器,可以进行交互
+
+ctrl+d 或 exit				退出容器（同时关闭容器）
+docker attach 容器ID（可只写部分）	进入容器中
+docker exec -it 容器ID /bin/bash	进入运行bash的容器中
+CTRL+P+Q				退出容器（CTRL+P+Q对有些容器退出无效）
+
+搭建本地私有仓库：
+	1、 docker run -d -p 5000:5000 -v /opt/dockerdata/registry:/tmp/registry registry   
+				#下载并启动registry容器，主机端口5000映射到容器端口5000，/opt/dockerdata/registry - 主机中的目录，
+				/tmp/registry - 容器的目录， registry  - 镜像，多个端口映射时，-p p1:p2 -p p3:p4/udp
+	2、 将本地镜像打标签为   192.168.185.70:5000/镜像名:TAG		#以registry的ip:port为前缀进行标记
+	3、 docker push 192.168.185.70:5000/镜像名:TAG			#上传到本地，期间可能会出现问题2，按2的解决方法解决
+	4、 curl -X GET http://127.0.0.1:5000/v2/_catalog		#查看本地仓库所有镜像的名称
+	5、 docker pull 192.168.185.70:5000/镜像名:TAG			#从私有仓库上下载镜像到本地
+
+docker run -d -P --name 名称  镜像 命令		--name标记可以为容器自定义命名
+docker run -d -P --name web --link name:alias 镜像  服务	容器互联 --link name:alias ，name为要连接的容器名称，alias是这个连接的别名
+
+
+项目打包及发布
+1、把second-test.jar包放到主机上 如/opt/dockerdata/test/下
+
+2、在相同目录下创建Dockerfile名称的文件，内容写入参照如下
+FROM java:8
+VOLUME /temp
+ADD second-test.jar test.jar
+RUN bash -c 'touch /test.jar'
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+       && echo 'Asia/Shanghai' >/etc/timezone
+EXPOSE 8083
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/ ./urandom","-jar","/test.jar"]
+
+3、使用build指令来生成镜像
+docker build -t 镜像名称[:TAG] .       #不写TAG则默认为latest，结尾 . 点不能省，自动找当前目录及下面子目录中的dockerfile
+docker build -f /path/to/a/Dockerfile -t 镜像名称[:TAG] . 指定dockerfile文件，相对或绝对路径
+
+4、build成功可以看到镜像已存在了。使用如下指令启动
+docker run --name 容器名 -d -p 外部端口:容器内服务端口 镜像名
+
+
+docker-compose安装
+ yum install python-pip #安装之前要先安装python-pip
+
+curl -L https://github.com/docker/compose/releases/download/1.24.0-rc1/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose  #下载
+chmod +x /usr/local/bin/docker-compose	#权限修改
+
+docker-compose version 		查看版本
+
+docker-compose up -d 首次使用
+docker-compose build 	重新创建
+docker-compose up --build  重新创建
+docker-compose stop 	停止
+docker-compose start	启动
+docker-compose down --rim all  停止容器删除容器删除镜像
+
+安装mysql
+docker run  -v /opt/dockerdata/pigx/mysql:/var/lib/mysql -p 3306:3306 --name mysql --privileged=true --restart=always -e MYSQL_ROOT_PASSWORD=123456 -d mysql:5.7 --lower_case_table_names=1
+	lower_case_table_names=1 表示大小写不敏感
+
+安装redis
+sudo docker run  --name redis --publish 6379:6379  --restart always -d redis:latest   # --publish=-p   --requirepass "mypassword"
+sudo docker run  --name redis --publish 6379:6379  --restart always -d redis:latest --requirepass "whxx123."  # 带密码
+
+安装zookeeper
+sudo docker run  --name zookeeper --publish 2181:2181 --restart always -d zookeeper:latest
+
+安装nginx
+
+先copy文件 nginx.conf   default.conf到下面指定位置
+(
+可以先不挂载目录直接启动 docker run --name nginx -p 80:80 -d nginx
+cd /opt/dockerdata/nginx   #进入目录
+docker cp nginx:/etc/nginx/nginx.conf nginx.conf # 把nginx.conf拷贝出来，同理把其它文件拷贝出来
+docker cp nginx:/etc/nginx/conf.d/default.conf conf.d/default.conf
+docker cp nginx:/usr/share/nginx/html/ html/
+)
+
+
+
+在/opt/dockerdata/nginx/log下创建空的 access.log文件
+
+sudo docker run --name nginx -p 80:80  \
+-v /opt/dockerdata/nginx/html:/usr/share/nginx/html \
+-v /opt/dockerdata/nginx/log:/var/log/nginx  \
+-v  /opt/dockerdata/nginx/nginx.conf:/etc/nginx/nginx.conf:ro  \
+-v /opt/dockerdata/nginx/conf.d:/etc/nginx/conf.d \
+--privileged=true -d nginx
+注意：
+1第一个“-v”，是项目位置，把项目放到挂载到的目录下即可；
+2第二个“-v”，是挂载的主配置文件"nginx.conf"，注意"nginx.conf"文件内有一行"include /etc/nginx/conf.d/*.conf;"，这个include指向了子配置文件的路径，此处注意include后所跟的路径一定不要出错。
+3第三个“-v”，把docker内子配置文件的路径也挂载了出来，注意要与（2）中include指向路径一致
+4 重点强调一下，nginx.conf是挂载了一个文件（docker是不推荐这样用的），conf.d挂载的是一个目录
+
+
+npm install --unsafe-perm=true --allow-root	#安装前端项目依赖
+npm run dev					#运行前端项目： dev环境
+
+问题：
+1、WARNING: IPv4 forwarding is disabled. Networking will not work./ping不通外网
+解决：
+	vi  /usr/lib/sysctl.d/00-system.conf
+	net.ipv4.ip_forward=1 #添加此行
+	systemctl restart network
+
+2、Get https://192.168.185.70:5000/v1/_ping: http: server gave HTTP response to HTTPS client /push到本地仓库失败
+	vi /etc/docker/daemon.json  #编辑文件
+	{ "insecure-registries":["192.168.185.70:5000"] }##{}中添加"insecure-registries":["192.168.185.70:5000"]
+	servcie docker restart		#重启docker
+	docker start registry容器ID	#启动registry
+
+docker-compose.yml文件
+
+
+version: '2'
+services:
+  pigx-eureka:
+    build:
+      context: ./
+      dockerfile: ./pigx-eureka/Dockerfile
+    restart: always
+    container_name: pigx-eureka
+    image: pigx-eureka
+    ports:
+      - 8761:8761
+
+  pigx-config:
+    build:
+      context: ./
+      dockerfile: ./pigx-config/Dockerfile
+    restart: always
+    container_name: pigx-config
+    image: pigx-config
+    links:			#  pigx-conf服务所用到的外部服务host
+      - servicesName:hostname   #  - docker服务名,如pigx-eureka : 本服务中引用到的hostname，如 http://auth:8888/  中的auth,相同时可写一个
+      - pigx-eureka	#服务名称，也是服务里面用到的host名称如果服务里面用到的host名跟services下面的服务名不一致，可以用  - servicesName:服务用到的host名
+    extra_hosts:
+      - pigx-mysql:192.168.185.56
+      - pigx-redis:192.168.185.56
+
+
+
+    networks:
+      mysql:
+        aliases:
+          - database-mysql
+
+
+networks:
+  mysql:
